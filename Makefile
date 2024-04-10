@@ -9,6 +9,8 @@ SRC	=	groundhog.py
 
 NAME =	groundhog
 
+.PHONY: all clean fclean re tests_run
+
 all: $(NAME)
 
 $(NAME):
@@ -21,3 +23,5 @@ fclean:
 		rm $(NAME)
 
 re: fclean all
+
+tests_run:
