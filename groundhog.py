@@ -18,7 +18,6 @@ def mainLoop(Groundhog):
         sys.exit(84)
     Groundhog.displayTendencyNb()
     Groundhog.displayWeirdValues()
-    print(f"Les valeurs sont : {Groundhog.temperatures}")
     return 0
 
 def handleArguments():
