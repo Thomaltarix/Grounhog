@@ -116,10 +116,10 @@ class Groundhog:
         """
         Displays as soon as it detects a switch in global tendency or nothing if not.
         """
-        trend = False
-        if trend:
+        if self.trendChanged:
             print("\t\ta switch occurs")
             self.tendencyNb += 1
+            self.trendChanged = False
         else:
             print("")
         return 0
