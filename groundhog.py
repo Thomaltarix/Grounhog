@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 import sys
+import mainClass
 
-class Groundhog:
 def mainLoop(Groundhog):
     """
     Main loop of the program.
@@ -13,7 +13,6 @@ def mainLoop(Groundhog):
             Groundhog.computeEvolution()
             Groundhog.computeDeviation()
             Groundhog.displayTrend()
-        self.period = period
     except Groundhog.Error as error:
         print(error)
         sys.exit(84)
@@ -21,29 +20,6 @@ def mainLoop(Groundhog):
     Groundhog.displayWeirdValues()
     print(f"Les valeurs sont : {Groundhog.temperatures}")
     return 0
-            self.message = message
-
-        def __str__(self):
-            return self.message
-
-    def getUserInput(self):
-        """
-        Get the user input.
-        """
-        temperature = input()
-        if temperature == "STOP":
-            return False
-        try:
-            self.temperatures.append(float(temperature))
-            return True
-        except ValueError:
-            raise self.Error("Invalid input: please enter a number or STOP.")
-
-    def computeAverage(self):
-        """
-        Computes the temperature increase average observed on the last period.
-        """
-        return 0
 
 def handleArguments():
     """
@@ -61,7 +37,6 @@ def handleArguments():
         print("Invalid input: please enter a positive number.")
         sys.exit(84)
     return period
-        return 0
 
 def main():
     """
