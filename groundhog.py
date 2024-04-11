@@ -44,22 +44,22 @@ class Groundhog:
         """
         return 0
 
-    def computeEvolution(self):
-        """
-        Computes the relative temperature evolution between the last given temperature and the temperature observed n-days ago.
-        """
-        return 0
-
-    def computeDeviation(self):
-        """
-        Computes the standard deviation of the temperatures observed during the last period.
-        """
-        return 0
-
-    def displayTrend(self):
-        """
-        Displays as soon as it detects a switch in global tendency or nothing if not.
-        """
+def handleArguments():
+    """
+    Handle the program arguments.
+    """
+    if len(sys.argv) != 2:
+        print("Usage: ./groundhog period")
+        sys.exit(84)
+    try:
+        period = int(sys.argv[1])
+    except ValueError:
+        print("Invalid input: please enter a valid number.")
+        sys.exit(84)
+    if period <= 0:
+        print("Invalid input: please enter a positive number.")
+        sys.exit(84)
+    return period
         return 0
 
 def main():
