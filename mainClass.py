@@ -1,19 +1,26 @@
 #!/usr/bin/python3
 
+from enum import Enum
+
 class Groundhog:
     """
     Class used to compute various statistics on a list of temperatures.
     """
 
-    def __init__(self, period = 0):
+    class SignedValue (Enum):
         """
-        Constructor of the class.
+        Enum used to determine if a value is positive, negative or null.
         """
-        self.temperatures = [[]]
-        self.period = period
-        self.tendencyNb = 0
-        self.lastTendency = 0
-        self.weirdValues = []
+        POSITIVE = 1
+        NEGATIVE = -1
+        NULL = 0
+
+        def __not__(self):
+            if self == self.POSITIVE:
+                return self.NEGATIVE
+            if self == self.NEGATIVE:
+                return self.POSITIVE
+            return self.NULL
 
     class Error(Exception):
         """
