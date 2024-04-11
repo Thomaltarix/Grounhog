@@ -63,7 +63,12 @@ def handleArguments():
         return 0
 
 def main():
-    return 0
+    """
+    Main function of the program.
+    """
+    period = handleArguments()
+    Groundhog = mainClass.Groundhog(period)
+    return mainLoop(Groundhog)
 
 if __name__ == '__main__':
     main()
