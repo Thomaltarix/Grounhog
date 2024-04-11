@@ -3,23 +3,24 @@
 import sys
 
 class Groundhog:
+def mainLoop(Groundhog):
     """
-    Class used to compute various statistics on a list of temperatures.
+    Main loop of the program.
     """
-
-    def __init__(self, period = 0):
-        """
-        Constructor of the class.
-        """
-        self.temperatures = []
+    try:
+        while Groundhog.catchUserInput():
+            Groundhog.computeAverage()
+            Groundhog.computeEvolution()
+            Groundhog.computeDeviation()
+            Groundhog.displayTrend()
         self.period = period
-
-    class Error(Exception):
-        """
-        Base class for exceptions in this module.
-        """
-
-        def __init__(self, message):
+    except Groundhog.Error as error:
+        print(error)
+        sys.exit(84)
+    Groundhog.displayTendencyNb()
+    Groundhog.displayWeirdValues()
+    print(f"Les valeurs sont : {Groundhog.temperatures}")
+    return 0
             self.message = message
 
         def __str__(self):
