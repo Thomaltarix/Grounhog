@@ -36,8 +36,9 @@ class Groundhog:
         self.temperatures = []
         self.period = period
         self.tendencyNb = 0
-        self.lastEvolution = self.SignedValue.NULL
+        self.lastEvolution = 0
         self.weirdValues = []
+        self.trendChanged = False
 
     def catchUserInput(self):
         """
@@ -73,15 +74,30 @@ class Groundhog:
             print("g=nan\t\t", end="")
         return 0
 
+    def getSign(self, value):
+        """
+        Returns the sign of a value.
+        """
+        if value > 0:
+            return self.SignedValue.POSITIVE
+        if value < 0:
+            return self.SignedValue.NEGATIVE
+        return self.SignedValue.NULL
+
     def computeEvolution(self):
         """
         Computes the relative temperature evolution between the last given temperature and the temperature observed n-days ago.
         """
         result = 0
         if self.isEnougValues(self.period + 1):
+            result = (self.temperatures[-1] - self.temperatures[-1 - self.period]) / self.temperatures[-1 - self.period] * 100
             print(f"r={result:.0f}%\t\t", end="")
         else:
             print("r=nan%\t\t", end="")
+        if self.getSign(result) != self.getSign(self.lastEvolution):
+            self.trendChanged = True
+        if (self.getSign(result) == self.SignedValue.NULL or self.getSign(self.lastEvolution) == self.SignedValue.NULL):
+            self.trendChanged = False
         self.lastEvolution = result
         return 0
 
