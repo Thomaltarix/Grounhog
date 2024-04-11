@@ -62,9 +62,12 @@ class Groundhog:
         """
         Computes the temperature increase average observed on the last period.
         """
-        result = 0
-        enoughValues = False
-        if enoughValues:
+        if self.isEnougValues(self.period + 1):
+            result = 0
+            for i in range(self.period):
+                if self.temperatures[-1 - i] > self.temperatures[-2 - i]:
+                    result += self.temperatures[-1 - i] - self.temperatures[-2 - i]
+            result /= self.period
             print(f"g={result:.2f}\t\t", end="")
         else:
             print("g=nan\t\t", end="")
