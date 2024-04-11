@@ -52,6 +52,12 @@ class Groundhog:
             raise self.Error("Invalid input: please enter a number or STOP.")
         return True
 
+    def isEnougValues(self, period = 0):
+        """
+        Returns True if there are enough values to compute the statistics.
+        """
+        return len(self.temperatures) >= period
+
     def computeAverage(self):
         """
         Computes the temperature increase average observed on the last period.
@@ -69,8 +75,7 @@ class Groundhog:
         Computes the relative temperature evolution between the last given temperature and the temperature observed n-days ago.
         """
         result = 0
-        enoughValues = False
-        if enoughValues:
+        if self.isEnougValues(self.period + 1):
             print(f"r={result:.0f}%\t\t", end="")
         else:
             print("r=nan%\t\t", end="")
@@ -82,8 +87,7 @@ class Groundhog:
         Computes the standard deviation of the temperatures observed during the last period.
         """
         result = 0
-        enoughValues = False
-        if enoughValues:
+        if self.isEnougValues(self.period):
             print(f"s={result:.2f}", end="")
         else:
             print("s=nan", end="")
