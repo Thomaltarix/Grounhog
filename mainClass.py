@@ -46,7 +46,9 @@ class Groundhog:
         """
         temperature = input()
         if temperature == "STOP":
-            return False
+            if self.isEnougValues(self.period):
+                return False
+            raise self.Error("Not enough values to compute the statistics.")
         try:
             self.temperatures.append(float(temperature))
         except ValueError:
