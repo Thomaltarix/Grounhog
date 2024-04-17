@@ -37,6 +37,7 @@ class Groundhog:
         self.period = period
         self.tendencyNb = 0
         self.lastEvolution = 0
+        self.standardDeviation = []
         self.weirdValues = []
         self.trendChanged = False
 
@@ -116,14 +117,16 @@ class Groundhog:
 
 
     def computeDeviation(self):
-        result = 0
+        deviation = 0
         if self.isEnougValues(self.period):
             average = self.calculateAverage()
             for i in range(self.period):
-                result += (self.temperatures[-1 - i] - average) ** 2
-            result = (result / self.period) ** 0.5
-            print(f"s={result:.2f}", end="")
+                deviation += (self.temperatures[-1 - i] - average) ** 2
+            deviation = (deviation / self.period) ** 0.5
+            self.standardDeviation.append(deviation)
+            print(f"s={deviation:.2f}", end="")
         else:
+            self.standardDeviation.append(-1)
             print("s=nan", end="")
         return 0
 
@@ -149,4 +152,24 @@ class Groundhog:
         """
         Displays the number of values that are considered as weird.
         """
-        print ("Weird values:", self.weirdValues)
+        nbweird = 0
+        weirddifference = []
+        weirdnb = []
+        for i in range(len(self.standardDeviation)):
+            if self.standardDeviation[i] != -1 and (self.temperatures[-1 - i] > self.temperatures[-1] + 2 * self.standardDeviation[i]):
+                weirddifference.append(self.temperatures[i] - self.temperatures[-1 - i] - self.standardDeviation[i])
+                weirdnb.append(i)
+        top_weird_values = []
+        top_index = []
+        for i in range(5):
+            if len(weirddifference) == 0:
+                break
+            maxweird = max(weirddifference)
+            top_index.append(weirdnb[weirddifference.index(maxweird)])
+            weirddifference.remove(maxweird)
+            top_weird_values.append(maxweird)
+        final_weird_values = []
+        for i in range(len(top_weird_values)):
+            final_weird_values.append(self.temperatures[-1 - top_index[i]])
+
+        print(len(top_weird_values), " weirdest values are ", final_weird_values)
