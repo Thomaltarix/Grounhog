@@ -38,7 +38,8 @@ class Groundhog:
         self.tendencyNb = 0
         self.lastEvolution = 0
         self.weirdValues = []
-        self.trendChanged = False
+        self.trendValues = []
+        self.threshold = 0.5
 
     def catchUserInput(self):
         """
@@ -94,13 +95,13 @@ class Groundhog:
         if self.isEnougValues(self.period + 1):
             result = (self.temperatures[-1] - self.temperatures[-1 - self.period]) / self.temperatures[-1 - self.period] * 100
             print(f"r={result:.0f}%\t\t", end="")
+            if (len(self.trendValues) < 2):
+                self.trendValues.append(result)
+            else:
+                self.trendValues[0] = result
+                self.trendValues.reverse()
         else:
             print("r=nan%\t\t", end="")
-        if self.getSign(result) != self.getSign(self.lastEvolution):
-            self.trendChanged = True
-        if (self.getSign(result) == self.SignedValue.NULL or self.getSign(self.lastEvolution) == self.SignedValue.NULL):
-            self.trendChanged = False
-        self.lastEvolution = result
         return 0
 
     def calculateAverage(self):
@@ -114,8 +115,6 @@ class Groundhog:
         for i in range(self.period):
             average += self.temperatures[-1 - i]
         return (average / self.period)
-
-
 
     def computeDeviation(self):
         result = 0
@@ -133,10 +132,11 @@ class Groundhog:
         """
         Displays as soon as it detects a switch in global tendency or nothing if not.
         """
-        if self.trendChanged:
+        if (self.isEnougValues(self.period) and (len(self.trendValues) == 2)
+        and (self.getSign(self.trendValues[0]) != self.getSign(self.trendValues[1]))
+        and (abs(self.trendValues[0] - self.trendValues[1]) >= self.threshold)):
             print("\t\ta switch occurs")
             self.tendencyNb += 1
-            self.trendChanged = False
         else:
             print("")
         return 0
