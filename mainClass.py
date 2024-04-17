@@ -103,12 +103,27 @@ class Groundhog:
         self.lastEvolution = result
         return 0
 
+    def calculateAverage(self):
+        """
+        Calculates the standard deviation of the last period and returns it.
+        """
+
+        average = 0
+        if not self.isEnougValues(self.period):
+            return -1
+        for i in range(self.period):
+            average += self.temperatures[-1 - i]
+        return (average / self.period)
+
+
+
     def computeDeviation(self):
-        """
-        Computes the standard deviation of the temperatures observed during the last period.
-        """
         result = 0
         if self.isEnougValues(self.period):
+            average = self.calculateAverage()
+            for i in range(self.period):
+                result += (self.temperatures[-1 - i] - average) ** 2
+            result = (result / self.period) ** 0.5
             print(f"s={result:.2f}", end="")
         else:
             print("s=nan", end="")
