@@ -93,8 +93,11 @@ class Groundhog:
         """
         result = 0
         if self.isEnougValues(self.period + 1):
-            result = (self.temperatures[-1] - self.temperatures[-1 - self.period]) / self.temperatures[-1 - self.period] * 100
-            print(f"r={result:.0f}%\t\t", end="")
+            try:
+                result = (self.temperatures[-1] - self.temperatures[-1 - self.period]) / self.temperatures[-1 - self.period] * 100
+            except ZeroDivisionError:
+                result = (self.temperatures[-1]) * 100
+                print(f"r={result:.0f}%\t\t", end="")
             if (len(self.trendValues) < 2):
                 self.trendValues.append(result)
             else:
