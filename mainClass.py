@@ -97,7 +97,7 @@ class Groundhog:
                 result = (self.temperatures[-1] - self.temperatures[-1 - self.period]) / self.temperatures[-1 - self.period] * 100
             except ZeroDivisionError:
                 result = (self.temperatures[-1]) * 100
-                print(f"r={result:.0f}%\t\t", end="")
+            print(f"r={result:.0f}%\t\t", end="")
             if (len(self.trendValues) < 2):
                 self.trendValues.append(result)
             else:
