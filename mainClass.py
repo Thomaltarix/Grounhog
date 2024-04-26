@@ -150,8 +150,52 @@ class Groundhog:
         """
         print("Global tendency switched", self.tendencyNb, "times")
 
+    def computeAverageWithIndex(self, index):
+        """
+        Computes the average of the last period.
+        """
+        result = 0
+        for i in range(self.period):
+            result += self.temperatures[index + i]
+        return (result / self.period)
+
+    def computeDeviationWithIndex(self, index):
+        """
+        Computes the standard deviation of the last period.
+        """
+        result = 0
+        average = self.computeAverageWithIndex(index)
+        for i in range(self.period):
+            result += (self.temperatures[index + i] - average) ** 2
+        return (result / self.period) ** 0.5
     def displayWeirdValues(self):
         """
         Displays the number of values that are considered as weird.
+        prendre la derniere valeur de la periode
+        faire la moyenne de la periode
+        faire la deviation de la periode
+        faire la moyenne - deviation * 2 et moyenne + deviation * 2
+        si la derniere valeur est en dehors de cet intervalle, elle est weird
+        on la calcule pour chaque valeur selectionnee la distance a la borne de l'intervalle la plus proche
+        on la sauvegare dans un tableau avec sa valeur d'origine
+        on trie le tableau
+        on prend les (5) premieres valeurs
+        on les affiche
         """
-        print ("Weird values:", self.weirdValues)
+        allweirdValues = []
+        if not self.isEnougValues(self.period):
+            return 0
+        for i in range(len(self.temperatures) - self.period + 1):
+            selectValue = self.temperatures[i + self.period - 1]
+            average = self.computeAverageWithIndex(i)
+            deviation = self.computeDeviationWithIndex(i)
+            lowerBound = average - 2 * deviation
+            upperBound = average + 2 * deviation
+            print("weird value", selectValue, "at index", i + self.period - 1, "lower bound", lowerBound, "upper bound", upperBound)
+            if selectValue < lowerBound or selectValue > upperBound:
+                allweirdValues.append([min(upperBound - selectValue, selectValue - lowerBound), selectValue])
+        allweirdValues.sort()
+        self.weirdValues = allweirdValues[:5]
+        print(len(self.weirdValues), "weirdest values are ", self.weirdValues)
+
+
