@@ -150,8 +150,48 @@ class Groundhog:
         """
         print("Global tendency switched", self.tendencyNb, "times")
 
+    def computeAverageWithIndex(self, index):
+        """
+        Computes the average of the last period.
+        """
+        result = 0
+        for i in range(self.period):
+            result += self.temperatures[index + i]
+        return (result / self.period)
+
+    def computeDeviationWithIndex(self, index):
+        """
+        Computes the standard deviation of the last period.
+        """
+        result = 0
+        average = self.computeAverageWithIndex(index)
+        for i in range(self.period):
+            result += (self.temperatures[index + i] - average) ** 2
+        return (result / self.period) ** 0.5
     def displayWeirdValues(self):
         """
         Displays the number of values that are considered as weird.
+        Take the last value of the period
+        Calculate the average of the period
+        Calculate the deviation of the period
+        Calculate the average - deviation * 2 and average + deviation * 2
+        If the last value is outside this interval, it is weird
+        For each selected value, calculate the distance to the nearest boundary of the interval
+        Save it in an array with its original value
+        Sort the array
+        Take the first (5) values
+        Display them
         """
-        print ("Weird values:", self.weirdValues)
+        allweirdValues = []
+        if not self.isEnougValues(self.period):
+            return 0
+        for i in range(len(self.temperatures) - self.period + 1):
+            selectValue = self.temperatures[i + self.period - 1]
+            average = self.computeAverageWithIndex(i)
+            deviation = self.computeDeviationWithIndex(i)
+            lowerBound = average - round(2 * deviation, 1)
+            upperBound = average + round(2 * deviation, 1)
+            allweirdValues.append([min(upperBound - selectValue, selectValue - lowerBound), selectValue])
+        allweirdValues.sort()
+        self.weirdValues = allweirdValues[:5]
+        print("5 weirdest values are ", self.weirdValues[0][1], self.weirdValues[1][1], self.weirdValues[2][1], self.weirdValues[3][1], self.weirdValues[4][1])
