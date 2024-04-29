@@ -191,8 +191,6 @@ class Groundhog:
             deviation = self.computeDeviationWithIndex(i)
             lowerBound = average - round(2 * deviation, 1)
             upperBound = average + round(2 * deviation, 1)
-            print("weird value", selectValue, "at index", i + self.period - 1, "lower bound", lowerBound, "upper bound", upperBound)
-            #if selectValue < lowerBound or selectValue > upperBound:
             allweirdValues.append([min(upperBound - selectValue, selectValue - lowerBound), selectValue])
         allweirdValues.sort()
         self.weirdValues = allweirdValues[:5]
