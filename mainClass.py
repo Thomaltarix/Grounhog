@@ -171,16 +171,16 @@ class Groundhog:
     def displayWeirdValues(self):
         """
         Displays the number of values that are considered as weird.
-        prendre la derniere valeur de la periode
-        faire la moyenne de la periode
-        faire la deviation de la periode
-        faire la moyenne - deviation * 2 et moyenne + deviation * 2
-        si la derniere valeur est en dehors de cet intervalle, elle est weird
-        on la calcule pour chaque valeur selectionnee la distance a la borne de l'intervalle la plus proche
-        on la sauvegare dans un tableau avec sa valeur d'origine
-        on trie le tableau
-        on prend les (5) premieres valeurs
-        on les affiche
+        Take the last value of the period
+        Calculate the average of the period
+        Calculate the deviation of the period
+        Calculate the average - deviation * 2 and average + deviation * 2
+        If the last value is outside this interval, it is weird
+        For each selected value, calculate the distance to the nearest boundary of the interval
+        Save it in an array with its original value
+        Sort the array
+        Take the first (5) values
+        Display them
         """
         allweirdValues = []
         if not self.isEnougValues(self.period):
@@ -189,13 +189,11 @@ class Groundhog:
             selectValue = self.temperatures[i + self.period - 1]
             average = self.computeAverageWithIndex(i)
             deviation = self.computeDeviationWithIndex(i)
-            lowerBound = average - 2 * deviation
-            upperBound = average + 2 * deviation
+            lowerBound = average - round(2 * deviation, 1)
+            upperBound = average + round(2 * deviation, 1)
             print("weird value", selectValue, "at index", i + self.period - 1, "lower bound", lowerBound, "upper bound", upperBound)
-            if selectValue < lowerBound or selectValue > upperBound:
-                allweirdValues.append([min(upperBound - selectValue, selectValue - lowerBound), selectValue])
+            #if selectValue < lowerBound or selectValue > upperBound:
+            allweirdValues.append([min(upperBound - selectValue, selectValue - lowerBound), selectValue])
         allweirdValues.sort()
         self.weirdValues = allweirdValues[:5]
-        print(len(self.weirdValues), "weirdest values are ", self.weirdValues)
-
-
+        print("5 weirdest values are ", self.weirdValues[0][1], self.weirdValues[1][1], self.weirdValues[2][1], self.weirdValues[3][1], self.weirdValues[4][1])
