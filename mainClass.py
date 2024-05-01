@@ -189,9 +189,10 @@ class Groundhog:
             selectValue = self.temperatures[i + self.period - 1]
             average = self.computeAverageWithIndex(i)
             deviation = self.computeDeviationWithIndex(i)
-            lowerBound = average - round(2 * deviation, 1)
-            upperBound = average + round(2 * deviation, 1)
+            lowerBound = average - 2 * deviation
+            upperBound = average + 2 * deviation
             allweirdValues.append([min(upperBound - selectValue, selectValue - lowerBound), selectValue])
         allweirdValues.sort()
-        self.weirdValues = allweirdValues[:5]
-        print("5 weirdest values are ", self.weirdValues[0][1], self.weirdValues[1][1], self.weirdValues[2][1], self.weirdValues[3][1], self.weirdValues[4][1])
+        for i in range(5):
+            self.weirdValues.append(allweirdValues[i][1])
+        print("5 weirdest values are", self.weirdValues)
