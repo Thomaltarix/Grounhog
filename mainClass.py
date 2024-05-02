@@ -93,7 +93,10 @@ class Groundhog:
         """
         result = 0
         if self.isEnougValues(self.period + 1):
-            result = (self.temperatures[-1] - self.temperatures[-1 - self.period]) / self.temperatures[-1 - self.period] * 100
+            try:
+                result = (self.temperatures[-1] - self.temperatures[-1 - self.period]) / self.temperatures[-1 - self.period] * 100
+            except ZeroDivisionError:
+                result = (self.temperatures[-1]) * 100
             print(f"r={result:.0f}%\t\t", end="")
             if (len(self.trendValues) < 2):
                 self.trendValues.append(result)
@@ -147,8 +150,49 @@ class Groundhog:
         """
         print("Global tendency switched", self.tendencyNb, "times")
 
+    def computeAverageWithIndex(self, index):
+        """
+        Computes the average of the last period.
+        """
+        result = 0
+        for i in range(self.period):
+            result += self.temperatures[index + i]
+        return (result / self.period)
+
+    def computeDeviationWithIndex(self, index):
+        """
+        Computes the standard deviation of the last period.
+        """
+        result = 0
+        average = self.computeAverageWithIndex(index)
+        for i in range(self.period):
+            result += (self.temperatures[index + i] - average) ** 2
+        return (result / self.period) ** 0.5
     def displayWeirdValues(self):
         """
         Displays the number of values that are considered as weird.
+        Take the last value of the period
+        Calculate the average of the period
+        Calculate the deviation of the period
+        Calculate the average - deviation * 2 and average + deviation * 2
+        If the last value is outside this interval, it is weird
+        For each selected value, calculate the distance to the nearest boundary of the interval
+        Save it in an array with its original value
+        Sort the array
+        Take the first (5) values
+        Display them
         """
-        print ("Weird values:", self.weirdValues)
+        allweirdValues = []
+        if not self.isEnougValues(self.period):
+            return 0
+        for i in range(len(self.temperatures) - self.period + 1):
+            selectValue = self.temperatures[i + self.period - 1]
+            average = self.computeAverageWithIndex(i)
+            deviation = self.computeDeviationWithIndex(i)
+            lowerBound = average - 2 * deviation
+            upperBound = average + 2 * deviation
+            allweirdValues.append([min(upperBound - selectValue, selectValue - lowerBound), selectValue])
+        allweirdValues.sort()
+        for i in range(5):
+            self.weirdValues.append(allweirdValues[i][1])
+        print("5 weirdest values are", self.weirdValues)
