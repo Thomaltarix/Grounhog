@@ -39,7 +39,7 @@ class Groundhog:
         self.lastEvolution = 0
         self.weirdValues = []
         self.trendValues = []
-        self.threshold = 0.5
+        self.switchesIndexes = []
 
     def catchUserInput(self):
         """
@@ -98,12 +98,9 @@ class Groundhog:
             except ZeroDivisionError:
                 result = (self.temperatures[-1]) * 100
             print(f"r={result:.0f}%\t\t", end="")
-            if (len(self.trendValues) < 2):
-                self.trendValues.append(result)
-            else:
-                self.trendValues[0] = result
-                self.trendValues.reverse()
+            self.trendValues.append(result)
         else:
+            self.trendValues.append("nan")
             print("r=nan%\t\t", end="")
         return 0
 
@@ -111,7 +108,6 @@ class Groundhog:
         """
         Calculates the standard deviation of the last period and returns it.
         """
-
         average = 0
         if not self.isEnougValues(self.period):
             return -1
@@ -135,13 +131,23 @@ class Groundhog:
         """
         Displays as soon as it detects a switch in global tendency or nothing if not.
         """
-        if (self.isEnougValues(self.period) and (len(self.trendValues) == 2)
-        and (self.getSign(self.trendValues[0]) != self.getSign(self.trendValues[1]))
-        and (abs(self.trendValues[0] - self.trendValues[1]) >= self.threshold)):
-            print("\t\ta switch occurs")
-            self.tendencyNb += 1
-        else:
-            print("")
+        signs = []
+        for i in range (self.period):
+            if (self.trendValues[-1-i] == "nan"):
+                print("")
+                return 0
+        if (self.isEnougValues(self.period)):
+            for i in range(self.period):
+                if (len(self.trendValues) -1 - i in self.switchesIndexes):
+                    print("")
+                    return 0
+                signs.append(self.getSign(self.trendValues[-1 - i]))
+            if (signs[0] != signs[-1]):
+                print("\t\ta switch occurs")
+                self.switchesIndexes.append(len(self.temperatures) - 1)
+                self.tendencyNb += 1
+            else:
+                print("")
         return 0
 
     def displayTendencyNb(self):
@@ -168,6 +174,7 @@ class Groundhog:
         for i in range(self.period):
             result += (self.temperatures[index + i] - average) ** 2
         return (result / self.period) ** 0.5
+
     def displayWeirdValues(self):
         """
         Displays the number of values that are considered as weird.
